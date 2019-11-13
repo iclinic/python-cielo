@@ -74,7 +74,7 @@ CIELO_MSG_ERRORS = {
 #     SSL_VERSION = ssl.PROTOCOL_SSLv23
 # except:
 #     SSL_VERSION = ssl.PROTOCOL_TLSv1
-SSL_VERSION = ssl.PROTOCOL_TLSv1
+SSL_VERSION = ssl.PROTOCOL_TLSv1_2
 
 
 class CieloHTTPSAdapter(HTTPAdapter):
