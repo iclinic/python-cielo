@@ -31,7 +31,7 @@ class VersionCommand(Command):
 
 
 setup(
-    name='python-cielo',
+    name='iclinic-python-cielo',
     version=version,
     description='python-cielo is a lightweight lib for making payments over the Cielo webservice (Brazil)',
     long_description=readme,
