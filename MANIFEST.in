@@ -1,4 +1,3 @@
 include README.rst
 include CHANGES.txt
-include cielo/authorize.xml
-include cielo/capture.xml
+include cielo/templates/*
