@@ -127,10 +127,6 @@ class BaseCieloObject(object):
         if use_ssl and not sandbox:
             self.session.mount('https://', CieloHTTPSAdapter())
 
-    def get_xml_transaction_id(self):
-        import uuid
-        return str(uuid.uuid4())
-
     def create_token(self):
         self.payload = open(
             os.path.join(
@@ -281,18 +277,6 @@ class BaseCieloObject(object):
         self._authorized = True
         return True
 
-    def get_token(self):
-        try:
-            self.token = self.dom.getElementsByTagName('codigo-token')[0].childNodes[0].data
-            self.status = self.dom.getElementsByTagName('status')[0].childNodes[0].data
-            self.card = self.dom.getElementsByTagName('numero-cartao-truncado')[0].childNodes[0].data
-            return self.token
-        except:
-            self.token = None
-            self.status = None
-            self.card = None
-        return False
-
 
 class CaptureTransaction(BaseCieloObject):
     template = 'templates/capture.xml'
@@ -384,7 +368,6 @@ class CancelTransaction(BaseCieloObject):
         self.api_key = api_key
         self.transaction_id = transaction_id
         self.sandbox = sandbox
-        self.xml_transaction_id = self.get_xml_transaction_id()
 
         self.template = 'templates/cancel.xml'
         if amount_to_cancel:
@@ -484,57 +467,6 @@ class PaymentAttempt(BaseCieloObject):
         self.card_holders_name = card_holders_name
         self._authorized = False
         self.sandbox = sandbox
-
-
-class UpdatePaymentAttempt(BaseCieloObject):
-    template = 'templates/authorize_update.xml'
-
-    def __init__(
-            self,
-            affiliation_id,
-            api_key,
-            total,
-            card_type,
-            installments,
-            order_id,
-            card_number,
-            cvc2,
-            exp_month,
-            exp_year,
-            card_holders_name,
-            transaction=CASH,
-            sandbox=False,
-            use_ssl=None,
-            gerar_token=False,
-        ):
-
-        super(UpdatePaymentAttempt, self).__init__(sandbox=sandbox, use_ssl=use_ssl)
-        assert isinstance(total, Decimal), u'total must be an instance of Decimal'
-        assert installments in range(1, 13), u'installments must be a integer between 1 and 12'
-        assert (installments == 1 and transaction == CASH) or installments > 1 and transaction != CASH, u'if installments = 1 then transaction must be None or "cash"'
-
-        if len(str(exp_year)) == 2:
-            exp_year = '20%s' % exp_year  # FIXME: bug do milênio em 2100
-
-        self.url = SANDBOX_URL if sandbox else PRODUCTION_URL
-        self.card_type = card_type
-        self.affiliation_id = affiliation_id
-        self.api_key = api_key
-        self.transaction = transaction
-        self.transaction_type = transaction  # para manter assinatura do pyrcws
-        self.total = moneyfmt(total, sep='', dp='')
-        self.installments = installments
-        self.order_id = order_id
-        self.card_number = card_number
-        self.cvc2 = cvc2
-        self.exp_month = exp_month
-        self.exp_year = exp_year
-        self.expiration = '%s%s' % (exp_year, exp_month)
-        self.card_holders_name = card_holders_name
-        self._authorized = False
-        self.sandbox = sandbox
-        self.gerar_token = 'true' if gerar_token else 'false'
-        self.xml_transaction_id = self.get_xml_transaction_id()
 
 
 class DebtAttempt(BaseCieloObject):

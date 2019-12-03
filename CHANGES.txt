@@ -1,3 +1,8 @@
+1.2.0
+=====
+
+  - Make master equal to update_ssl branch
+
 1.1.1
 =====
 
