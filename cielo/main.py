@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import absolute_import
 from datetime import datetime
 import os
 import ssl
@@ -7,7 +8,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 import xml.dom.minidom
 from decimal import Decimal
-from util import moneyfmt
+from .util import moneyfmt
 
 
 VISA, MASTERCARD, DINERS, DISCOVER, ELO, AMEX = 'visa', \
