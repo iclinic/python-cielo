@@ -1,4 +1,8 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
 from decimal import Decimal
+from six.moves import map
+from six.moves import range
 
 def moneyfmt(value, places=2, curr='', sep=',', dp='.',
              pos='', neg='-', trailneg=''):
@@ -29,7 +33,7 @@ def moneyfmt(value, places=2, curr='', sep=',', dp='.',
     q = Decimal(10) ** -places      # 2 places --> '0.01'
     sign, digits, exp = value.quantize(q).as_tuple()
     result = []
-    digits = map(str, digits)
+    digits = list(map(str, digits))
     build, next = result.append, digits.pop
     if sign:
         build(trailneg)

@@ -1,3 +1,7 @@
+1.5.0
+=====
+  - Missing some python3 needs
+
 1.4.0
 =====
   - Add python3 support
