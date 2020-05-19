@@ -1,6 +1,6 @@
 1.5.5
 =====
-  - Payload logs
+  - Masked logs
 
 1.5.4
 =====
