@@ -277,5 +277,43 @@ class MainTest(unittest.TestCase):
         debt = DebtAttempt(**params)
         self.assertTrue(debt.get_authorized())
 
+    def test_12_mask_sensible_info(self):
+        fake_credit_card_number = "1234567812345678"
+        expected_response = "123456******5678"
+
+        self.assertEqual(
+            BaseCieloObject().mask_sensible_info(fake_credit_card_number),
+            expected_response
+        )
+
+    def test_13_format_payload_logger(self):
+        fake_payload = (
+            "<dados-portador>"
+            "    <numero>1234567812345678</numero>"
+            "    <validade>203012</validade>"
+            "    <nome-portador>JOAO DA SILVA</nome-portador>"
+            "<dados-portador>"
+            "<dados-token>"
+            "    <codigo-token>foobar1234567890foobar1234567890foobar1234567890foobar1234567890</codigo-token>"
+            "    <status>1</status>"
+            "<dados-token>"
+        )
+        expected_response = (
+            "<dados-portador>"
+            "    <numero>123456******5678</numero>"
+            "    <validade>203012</validade>"
+            "    <nome-portador>JOAO DA SILVA</nome-portador>"
+            "<dados-portador>"
+            "<dados-token>"
+            "    <codigo-token>foobar******************************************************7890</codigo-token>"
+            "    <status>1</status>"
+            "<dados-token>"
+        )
+
+        self.assertEqual(
+            BaseCieloObject().format_payload_for_logging(fake_payload),
+            expected_response
+        )
+
 if __name__ == '__main__':
     unittest.main()
