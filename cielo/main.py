@@ -142,7 +142,7 @@ class BaseCieloObject(object):
             data={'mensagem': self.payload, })
 
         self.dom = xml.dom.minidom.parseString(self.response.content)
-        logger.debug("[python-cielo create_token] response: {}".format(self.response.content).content)
+        logger.debug("[python-cielo create_token] response: {}".format(self.response.content))
 
         if self.dom.getElementsByTagName('erro'):
             raise TokenException('Erro ao gerar token!')
