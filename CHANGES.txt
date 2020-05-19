@@ -1,3 +1,7 @@
+1.5.1
+=====
+  - Add logs on create_token and capture methods
+
 1.5.0
 =====
   - Missing some python3 needs
