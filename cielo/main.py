@@ -137,6 +137,8 @@ class BaseCieloObject(object):
             os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
                 self.template), 'r').read() % self.__dict__
+        logger.debug("[python-cielo create_token] payload: {}".format(self.payload))
+
         self.response = self.session.post(
             self.url,
             data={'mensagem': self.payload, })
@@ -164,6 +166,7 @@ class BaseCieloObject(object):
                 os.path.dirname(os.path.abspath(__file__)),
                 'templates/capture.xml'),
             'r').read() % self.__dict__
+        logger.debug("[python-cielo capture] payload: {}".format(payload))
 
         response = self.session.post(self.url, data={
             'mensagem': payload,
