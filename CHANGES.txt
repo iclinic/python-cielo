@@ -1,3 +1,7 @@
+1.5.3
+=====
+  - Fix logging file to payments
+
 1.5.2
 =====
   - Fix logging file to api_payments
