@@ -288,17 +288,25 @@ class MainTest(unittest.TestCase):
 
     def test_13_format_payload_logger(self):
         fake_payload = (
+            "<dados-ec>
+            "    <numero>1055477370</numero>"
+            "    <chave>0ba8eabc32dbc8e7543c3a804a74b400b3755b9b872eb72fd9873fd6f3e449e0</chave>"
+            "<dados-ec>"
             "<dados-portador>"
             "    <numero>1234567812345678</numero>"
             "    <validade>203012</validade>"
             "    <nome-portador>JOAO DA SILVA</nome-portador>"
             "<dados-portador>"
             "<dados-token>"
-            "    <codigo-token>foobar1234567890foobar1234567890foobar1234567890foobar1234567890</codigo-token>"
+            "    <codigo-token>foo1234567890barfoo1234567890barfoo1234567890barfoo1234567890bar</codigo-token>"
             "    <status>1</status>"
             "<dados-token>"
         )
         expected_response = (
+            "<dados-ec>
+            "    <numero>1055477370</numero>"
+            "    <chave>foo123******************************************************0bar</chave>"
+            "<dados-ec>"
             "<dados-portador>"
             "    <numero>123456******5678</numero>"
             "    <validade>203012</validade>"
