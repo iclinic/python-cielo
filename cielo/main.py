@@ -13,7 +13,7 @@ from decimal import Decimal
 from .util import moneyfmt
 from six.moves import range
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("api_payments")
 
 VISA, MASTERCARD, DINERS, DISCOVER, ELO, AMEX = 'visa', \
     'mastercard', 'diners', 'discover', 'elo', 'amex'

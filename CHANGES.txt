@@ -1,3 +1,7 @@
+1.5.2
+=====
+  - Fix logging file to api_payments
+
 1.5.1
 =====
   - Add logs on create_token and capture methods
