@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from datetime import datetime
+import logging
 import os
 import ssl
 import requests
@@ -12,6 +13,7 @@ from decimal import Decimal
 from .util import moneyfmt
 from six.moves import range
 
+logger = logging.getLogger(__name__)
 
 VISA, MASTERCARD, DINERS, DISCOVER, ELO, AMEX = 'visa', \
     'mastercard', 'diners', 'discover', 'elo', 'amex'
@@ -140,6 +142,7 @@ class BaseCieloObject(object):
             data={'mensagem': self.payload, })
 
         self.dom = xml.dom.minidom.parseString(self.response.content)
+        logger.debug("[python-cielo create_token] response: {}".format(self.response.content).content)
 
         if self.dom.getElementsByTagName('erro'):
             raise TokenException('Erro ao gerar token!')
@@ -166,6 +169,7 @@ class BaseCieloObject(object):
             'mensagem': payload,
         })
 
+        logger.debug("[python-cielo capture] response: {}".format(response.content))
         dom = xml.dom.minidom.parseString(response.content)
         status = int(dom.getElementsByTagName('status')[0].childNodes[0].data)
 
