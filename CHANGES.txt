@@ -1,3 +1,7 @@
+1.5.7
+=====
+  - Fix on regex to consider all ocurrences
+
 1.5.6
 =====
   - Only card number will be masked
