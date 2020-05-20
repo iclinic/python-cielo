@@ -1,3 +1,7 @@
+1.6.0
+=====
+  - Fix capture logs, code format
+
 1.5.9
 =====
   - Add get_authorized logs

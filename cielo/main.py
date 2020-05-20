@@ -177,15 +177,21 @@ class BaseCieloObject(object):
                 os.path.dirname(os.path.abspath(__file__)),
                 'templates/capture.xml'),
             'r').read() % self.__dict__
-        logger.debug("[python-cielo capture] payload: {}".format(self.format_payload_for_logging(payload)))
+        logger.debug(
+            "[python-cielo capture] payload: {}".format(
+                self.format_payload_for_logging(payload)
+            )
+        )
 
         response = self.session.post(self.url, data={
             'mensagem': payload,
         })
 
-        logger.debug("[python-cielo capture] response: {}".format(
-            self.format_payload_for_logging(self.response.content)
-        ))
+        logger.debug(
+            "[python-cielo capture] response: {}".format(
+                self.format_payload_for_logging(response.content)
+            )
+        )
         dom = xml.dom.minidom.parseString(response.content)
         status = int(dom.getElementsByTagName('status')[0].childNodes[0].data)
 
@@ -275,7 +281,7 @@ class BaseCieloObject(object):
             data={'mensagem': self.payload, })
 
         logger.debug("[python-cielo get_authorized] response: {}".format(
-            self.format_payload_for_logging(self.response)
+            self.format_payload_for_logging(self.response.content)
         ))
 
         self.dom = xml.dom.minidom.parseString(self.response.content)
