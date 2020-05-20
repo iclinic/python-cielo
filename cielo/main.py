@@ -313,16 +313,16 @@ class BaseCieloObject(object):
         payload = str(payload)
         for xml_tag in LOGGING_MASK_XML_TAGS:
             try:
-                info = re.search("<{0}>.*?</{0}>".format(xml_tag), payload).group(0)
-                masked_info = self.mask_sensible_info(
-                    re.sub("<[^<]+>", "", info),
-                    limit_start,
-                    limit_end
-                )
-                payload = payload.replace(info, "<{0}>{1}</{0}>".format(xml_tag, masked_info))
+                for info in re.findall("<{0}>.*?</{0}>".format(xml_tag), payload):
+                    masked_info = self.mask_sensible_info(
+                        re.sub("<[^<]+>", "", info),
+                        limit_start,
+                        limit_end
+                    )
+                    payload = payload.replace(info, "<{0}>{1}</{0}>".format(xml_tag, masked_info))
             except AttributeError:
                 continue
-        return payload
+        return payload.replace("\n","")
 
 
 class CaptureTransaction(BaseCieloObject):
