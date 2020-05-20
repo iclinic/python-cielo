@@ -1,3 +1,7 @@
+1.5.9
+=====
+  - Add get_authorized logs
+
 1.5.8
 =====
   - Fix text lenght less than mask size
