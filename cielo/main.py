@@ -83,9 +83,7 @@ CIELO_MSG_ERRORS = {
 SSL_VERSION = ssl.PROTOCOL_TLSv1_2
 
 LOGGING_MASK_XML_TAGS = [
-    "codigo-token",
     "numero",
-    "chave",
 ]
 LOGGING_DEFAULT_START_LIMIT = 6
 LOGGING_DEFAULT_END_LIMIT = 4
