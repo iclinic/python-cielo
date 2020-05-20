@@ -315,7 +315,7 @@ class BaseCieloObject(object):
         payload = str(payload)
         for xml_tag in LOGGING_MASK_XML_TAGS:
             try:
-                info = re.search("<{0}>[A-Za-z0-9]*</{0}>".format(xml_tag), payload).group(0)
+                info = re.search("<{0}>.*?</{0}>".format(xml_tag), payload).group(0)
                 masked_info = self.mask_sensible_info(
                     re.sub("<[^<]+>", "", info),
                     limit_start,
