@@ -144,18 +144,22 @@ class BaseCieloObject(object):
             os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
                 self.template), 'r').read() % self.__dict__
-        logger.debug("[python-cielo create_token] payload: {}".format(
+
+        self.register_log(
+            "[python-cielo create_token] payload",
             self.format_payload_for_logging(self.payload)
-        ))
+        )
 
         self.response = self.session.post(
             self.url,
             data={'mensagem': self.payload, })
 
         self.dom = xml.dom.minidom.parseString(self.response.content)
-        logger.debug("[python-cielo create_token] response: {}".format(
-            self.format_payload_for_logging(self.response.content)
-        ))
+
+        self.register_log(
+            "[python-cielo create_token] response",
+            self.format_payload_for_logging(self.dom.toxml())
+        )
 
         if self.dom.getElementsByTagName('erro'):
             raise TokenException('Erro ao gerar token!')
@@ -177,22 +181,21 @@ class BaseCieloObject(object):
                 os.path.dirname(os.path.abspath(__file__)),
                 'templates/capture.xml'),
             'r').read() % self.__dict__
-        logger.debug(
-            "[python-cielo capture] payload: {}".format(
-                self.format_payload_for_logging(payload)
-            )
+
+        self.register_log(
+            "[python-cielo capture] payload response",
+            self.format_payload_for_logging(payload)
         )
 
         response = self.session.post(self.url, data={
             'mensagem': payload,
         })
 
-        logger.debug(
-            "[python-cielo capture] response: {}".format(
-                self.format_payload_for_logging(response.content)
-            )
-        )
         dom = xml.dom.minidom.parseString(response.content)
+        self.register_log(
+            "[python-cielo capture] response",
+            self.format_payload_for_logging(dom.toxml())
+        )
         status = int(dom.getElementsByTagName('status')[0].childNodes[0].data)
 
         if status != 6:
@@ -272,19 +275,21 @@ class BaseCieloObject(object):
                 self.template),
             'r').read() % self.__dict__
 
-        logger.debug("[python-cielo get_authorized] payload: {}".format(
+        self.register_log(
+            "[python-cielo get_authorized] payload",
             self.format_payload_for_logging(self.payload)
-        ))
+        )
 
         self.response = self.session.post(
             self.url,
             data={'mensagem': self.payload, })
 
-        logger.debug("[python-cielo get_authorized] response: {}".format(
-            self.format_payload_for_logging(self.response.content)
-        ))
-
         self.dom = xml.dom.minidom.parseString(self.response.content)
+        self.register_log(
+            "[python-cielo get_authorized] response",
+            self.format_payload_for_logging(self.dom.toxml())
+        )
+
 
         if self.dom.getElementsByTagName('erro'):
             self.error = self.dom.getElementsByTagName(
@@ -328,7 +333,7 @@ class BaseCieloObject(object):
     def format_payload_for_logging(
         self, payload, limit_start=LOGGING_DEFAULT_START_LIMIT, limit_end=LOGGING_DEFAULT_END_LIMIT
     ):
-        payload = str(payload)
+        payload = "{}".format(payload)
         for xml_tag in LOGGING_MASK_XML_TAGS:
             try:
                 for info in re.findall("<{0}>.*?</{0}>".format(xml_tag), payload):
@@ -341,6 +346,12 @@ class BaseCieloObject(object):
             except AttributeError:
                 continue
         return payload.replace("\n","")
+
+    def register_log(self, prefix, text):
+        try:
+            logger.debug("{}: {}".format(prefix, text))
+        except Exception:
+            logger.debug("{}: UNABLE TO LOG".format(prefix))
 
 
 class CaptureTransaction(BaseCieloObject):
