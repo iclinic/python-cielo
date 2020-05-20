@@ -308,7 +308,7 @@ class BaseCieloObject(object):
         if text_size <= limit_start + limit_end:
             return text
 
-        middle_lenght = len(text) - limit_start - limit_end
+        middle_lenght = text_size - limit_start - limit_end
         return "{}{}{}".format(text[:limit_start], replace_by*middle_lenght, text[-limit_end:])
 
     def format_payload_for_logging(
