@@ -1,5 +1,9 @@
 1.5.5
 =====
+  - Only card number will be masked
+
+1.5.5
+=====
   - Masked logs
 
 1.5.4
