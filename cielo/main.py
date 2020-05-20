@@ -147,7 +147,7 @@ class BaseCieloObject(object):
                 os.path.dirname(os.path.abspath(__file__)),
                 self.template), 'r').read() % self.__dict__
         logger.debug("[python-cielo create_token] payload: {}".format(
-            self.format_payload_logger(self.payload)
+            self.format_payload_for_logging(self.payload)
         ))
 
         self.response = self.session.post(
@@ -156,7 +156,7 @@ class BaseCieloObject(object):
 
         self.dom = xml.dom.minidom.parseString(self.response.content)
         logger.debug("[python-cielo create_token] response: {}".format(
-            self.format_payload_logger(self.response.content)
+            self.format_payload_for_logging(self.response.content)
         ))
 
         if self.dom.getElementsByTagName('erro'):
@@ -179,14 +179,14 @@ class BaseCieloObject(object):
                 os.path.dirname(os.path.abspath(__file__)),
                 'templates/capture.xml'),
             'r').read() % self.__dict__
-        logger.debug("[python-cielo capture] payload: {}".format(self.format_payload_logger(payload)))
+        logger.debug("[python-cielo capture] payload: {}".format(self.format_payload_for_logging(payload)))
 
         response = self.session.post(self.url, data={
             'mensagem': payload,
         })
 
         logger.debug("[python-cielo capture] response: {}".format(
-            self.format_payload_logger(self.response.content)
+            self.format_payload_for_logging(self.response.content)
         ))
         dom = xml.dom.minidom.parseString(response.content)
         status = int(dom.getElementsByTagName('status')[0].childNodes[0].data)
