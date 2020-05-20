@@ -266,9 +266,17 @@ class BaseCieloObject(object):
                 self.template),
             'r').read() % self.__dict__
 
+        logger.debug("[python-cielo get_authorized] payload: {}".format(
+            self.format_payload_for_logging(self.payload)
+        ))
+
         self.response = self.session.post(
             self.url,
             data={'mensagem': self.payload, })
+
+        logger.debug("[python-cielo get_authorized] response: {}".format(
+            self.format_payload_for_logging(self.response)
+        ))
 
         self.dom = xml.dom.minidom.parseString(self.response.content)
 
