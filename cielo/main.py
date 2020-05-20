@@ -304,6 +304,10 @@ class BaseCieloObject(object):
         self, text, limit_start=LOGGING_DEFAULT_START_LIMIT, limit_end=LOGGING_DEFAULT_END_LIMIT,
         replace_by="*"
     ):
+        text_size = len(text)
+        if text_size <= limit_start + limit_end:
+            return text
+
         middle_lenght = len(text) - limit_start - limit_end
         return "{}{}{}".format(text[:limit_start], replace_by*middle_lenght, text[-limit_end:])
 

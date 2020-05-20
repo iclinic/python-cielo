@@ -1,5 +1,9 @@
 1.5.7
 =====
+  - Fix text lenght less than mask size
+
+1.5.7
+=====
   - Fix on regex to consider all ocurrences
 
 1.5.6
