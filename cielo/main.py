@@ -5,6 +5,7 @@ from datetime import datetime
 import logging
 import os
 import ssl
+import re
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
@@ -81,6 +82,14 @@ CIELO_MSG_ERRORS = {
 #     SSL_VERSION = ssl.PROTOCOL_TLSv1
 SSL_VERSION = ssl.PROTOCOL_TLSv1_2
 
+LOGGING_MASK_XML_TAGS = [
+    "codigo-token",
+    "numero",
+    "chave",
+]
+LOGGING_DEFAULT_START_LIMIT = 6
+LOGGING_DEFAULT_END_LIMIT = 4
+
 
 class CieloHTTPSAdapter(HTTPAdapter):
     def init_poolmanager(self, connections, maxsize, **kwargs):
@@ -137,14 +146,18 @@ class BaseCieloObject(object):
             os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
                 self.template), 'r').read() % self.__dict__
-        logger.debug("[python-cielo create_token] payload: {}".format(self.payload))
+        logger.debug("[python-cielo create_token] payload: {}".format(
+            self.format_payload_for_logging(self.payload)
+        ))
 
         self.response = self.session.post(
             self.url,
             data={'mensagem': self.payload, })
 
         self.dom = xml.dom.minidom.parseString(self.response.content)
-        logger.debug("[python-cielo create_token] response: {}".format(self.response.content))
+        logger.debug("[python-cielo create_token] response: {}".format(
+            self.format_payload_for_logging(self.response.content)
+        ))
 
         if self.dom.getElementsByTagName('erro'):
             raise TokenException('Erro ao gerar token!')
@@ -166,13 +179,15 @@ class BaseCieloObject(object):
                 os.path.dirname(os.path.abspath(__file__)),
                 'templates/capture.xml'),
             'r').read() % self.__dict__
-        logger.debug("[python-cielo capture] payload: {}".format(payload))
+        logger.debug("[python-cielo capture] payload: {}".format(self.format_payload_for_logging(payload)))
 
         response = self.session.post(self.url, data={
             'mensagem': payload,
         })
 
-        logger.debug("[python-cielo capture] response: {}".format(response.content))
+        logger.debug("[python-cielo capture] response: {}".format(
+            self.format_payload_for_logging(self.response.content)
+        ))
         dom = xml.dom.minidom.parseString(response.content)
         status = int(dom.getElementsByTagName('status')[0].childNodes[0].data)
 
@@ -286,6 +301,30 @@ class BaseCieloObject(object):
 
         self._authorized = True
         return True
+
+    def mask_sensible_info(
+        self, text, limit_start=LOGGING_DEFAULT_START_LIMIT, limit_end=LOGGING_DEFAULT_END_LIMIT,
+        replace_by="*"
+    ):
+        middle_lenght = len(text) - limit_start - limit_end
+        return "{}{}{}".format(text[:limit_start], replace_by*middle_lenght, text[-limit_end:])
+
+    def format_payload_for_logging(
+        self, payload, limit_start=LOGGING_DEFAULT_START_LIMIT, limit_end=LOGGING_DEFAULT_END_LIMIT
+    ):
+        payload = str(payload)
+        for xml_tag in LOGGING_MASK_XML_TAGS:
+            try:
+                info = re.search("<{0}>.*?</{0}>".format(xml_tag), payload).group(0)
+                masked_info = self.mask_sensible_info(
+                    re.sub("<[^<]+>", "", info),
+                    limit_start,
+                    limit_end
+                )
+                payload = payload.replace(info, "<{0}>{1}</{0}>".format(xml_tag, masked_info))
+            except AttributeError:
+                continue
+        return payload
 
 
 class CaptureTransaction(BaseCieloObject):
